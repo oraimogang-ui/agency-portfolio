@@ -333,8 +333,9 @@
     <section id="contact" class="border-t border-white/10">
         <div class="px-6 py-24 max-w-2xl mx-auto">
             <h2 class="text-xs uppercase tracking-widest text-white/50 mb-12">Get In Touch</h2>
-            <form name="contact" method="POST" data-netlify="true" action="/success.html" class="space-y-6">
-                <input type="hidden" name="form-name" value="contact" />
+            <form action="https://api.web3forms.com/submit" method="POST" class="space-y-6">
+                <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
+                <input type="hidden" name="redirect" value="https://craden.studio/success">
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
