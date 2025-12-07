@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog | Craden Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050505;
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body class="antialiased selection:bg-white selection:text-black">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 mix-blend-difference px-6 py-6 flex justify-between items-center">
+        <a href="../index.html" class="text-sm font-medium tracking-widest uppercase">CRADEN STUDIO</a>
+        <div class="flex gap-8">
+            <a href="../index.html#services"
+                class="text-sm font-medium tracking-widest uppercase hover:underline">Services</a>
+            <a href="index.html" class="text-sm font-medium tracking-widest uppercase hover:underline">Blog</a>
+            <a href="../index.html#contact"
+                class="text-sm font-medium tracking-widest uppercase hover:underline">Contact</a>
+        </div>
+    </nav>
+
+    <!-- Blog Index -->
+    <main class="min-h-screen pt-32 px-6">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-5xl md:text-7xl font-medium mb-16" style="letter-spacing: -0.04em; line-height: 0.95;">
+                <span class="font-light italic font-serif text-white/80">Insights</span>
+            </h1>
+
+            <div class="divide-y divide-white/10">
+                <article class="group py-8">
+                    <a href="ai-agents-2025.html" class="flex justify-between items-baseline">
+                        <time datetime="2025-12-07"
+                            class="text-xs uppercase tracking-widest text-white/30 group-hover:text-white transition-colors duration-300 w-32 shrink-0">DEC
+                            07, 2025</time>
+                        <span
+                            class="text-lg font-light text-white/60 group-hover:text-white transition-colors duration-300 flex-1 ml-8">Why
+                            AI Agents Are Replacing Managers in 2025</span>
+                    </a>
+                </article>
+                <article class="group py-8">
+                    <a href="#" class="flex justify-between items-baseline">
+                        <time datetime="2025-11-28"
+                            class="text-xs uppercase tracking-widest text-white/30 group-hover:text-white transition-colors duration-300 w-32 shrink-0">NOV
+                            28, 2025</time>
+                        <span
+                            class="text-lg font-light text-white/60 group-hover:text-white transition-colors duration-300 flex-1 ml-8">The
+                            SEO Stack for 2026</span>
+                    </a>
+                </article>
+                <article class="group py-8">
+                    <a href="#" class="flex justify-between items-baseline">
+                        <time datetime="2025-11-15"
+                            class="text-xs uppercase tracking-widest text-white/30 group-hover:text-white transition-colors duration-300 w-32 shrink-0">NOV
+                            15, 2025</time>
+                        <span
+                            class="text-lg font-light text-white/60 group-hover:text-white transition-colors duration-300 flex-1 ml-8">Automation
+                            or Extinction</span>
+                    </a>
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <footer class="border-t border-white/10 px-6 py-12 flex justify-between items-end mt-24">
+        <div>
+            <p class="text-[10px] text-white/30 uppercase tracking-widest">&copy; 2025 Craden Studio.</p>
+        </div>
+        <div class="flex gap-6">
+            <a href="#" class="text-xs text-white/50 hover:text-white transition-colors">Twitter/X</a>
+            <a href="#" class="text-xs text-white/50 hover:text-white transition-colors">LinkedIn</a>
+            <a href="#" class="text-xs text-white/50 hover:text-white transition-colors">Instagram</a>
+        </div>
+    </footer>
+
+</body>
+
+</html>

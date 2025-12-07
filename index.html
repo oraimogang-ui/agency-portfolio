@@ -4,7 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AGENCY | Architecting Digital Dominance</title>
+    <title>Craden Studio | AI Architecture & Automation</title>
+    <meta property="og:title" content="Craden Studio | AI Architecture & Automation">
+    <meta property="og:description" content="We build autonomous digital workers and sovereign web systems.">
+    <meta property="og:image" content="https://cradenstudio.com/agent-dashboard.png">
+    <meta property="og:type" content="website">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -55,9 +61,12 @@
     <!-- Navigation -->
     <nav
         class="fixed top-0 w-full z-50 mix-blend-difference px-6 py-6 flex justify-between items-center opacity-0 animate-fade-in-down">
-        <a href="#" class="text-sm font-medium tracking-widest uppercase">AGENCY</a>
-        <a href="mailto:hello@agency.com"
-            class="text-sm font-medium tracking-widest uppercase hover:underline">Contact</a>
+        <a href="index.html" class="text-sm font-medium tracking-widest uppercase">CRADEN STUDIO</a>
+        <div class="flex gap-8">
+            <a href="#services" class="text-sm font-medium tracking-widest uppercase hover:underline">Services</a>
+            <a href="blog/index.html" class="text-sm font-medium tracking-widest uppercase hover:underline">Blog</a>
+            <a href="#contact" class="text-sm font-medium tracking-widest uppercase hover:underline">Contact</a>
+        </div>
     </nav>
 
     <!-- Hero Section -->
@@ -79,7 +88,7 @@
     </header>
 
     <!-- Services Section -->
-    <section class="border-t border-white/10">
+    <section id="services" class="border-t border-white/10">
         <div class="grid grid-cols-1 md:grid-cols-3">
             <!-- Service 1 -->
             <div
@@ -88,7 +97,7 @@
                 <div>
                     <h3 class="text-3xl font-light mb-4">AI Agents</h3>
                     <p class="text-sm text-white/60 group-hover:text-black/60 max-w-xs transition-colors duration-500">
-                        Autonomous digital workers that scale your operations infinitely without sleep.</p>
+                        Autonomous digital workers that run 24/7 operations without sleep.</p>
                 </div>
                 <div
                     class="w-8 h-8 rounded-full border border-white/20 group-hover:border-black/20 flex items-center justify-center transition-all duration-500 group-hover:rotate-45">
@@ -106,7 +115,7 @@
                 <div>
                     <h3 class="text-3xl font-light mb-4">Workflow Automation</h3>
                     <p class="text-sm text-white/60 group-hover:text-black/60 max-w-xs transition-colors duration-500">
-                        Seamless systems that eliminate redundancy and accelerate thoroughput.</p>
+                        Seamless API integrations that eliminate manual data entry.</p>
                 </div>
                 <div
                     class="w-8 h-8 rounded-full border border-white/20 group-hover:border-black/20 flex items-center justify-center transition-all duration-500 group-hover:rotate-45">
@@ -124,7 +133,7 @@
                 <div>
                     <h3 class="text-3xl font-light mb-4">SEO Systems</h3>
                     <p class="text-sm text-white/60 group-hover:text-black/60 max-w-xs transition-colors duration-500">
-                        Data-driven dominance of search results through programmatic architecture.</p>
+                        Programmatic SEO architecture for dominance in Google Rankings.</p>
                 </div>
                 <div
                     class="w-8 h-8 rounded-full border border-white/20 group-hover:border-black/20 flex items-center justify-center transition-all duration-500 group-hover:rotate-45">
@@ -227,7 +236,7 @@
 
                 <!-- Product 2 -->
                 <div
-                    class="bg-[#050505] p-8 flex flex-col justify-between group hover:bg-white hover:text-black transition-colors duration-500">
+                    class="hidden bg-[#050505] p-8 flex flex-col justify-between group hover:bg-white hover:text-black transition-colors duration-500">
                     <div>
                         <div
                             class="w-full aspect-video bg-white/5 mb-6 flex items-center justify-center group-hover:bg-black/5 transition-colors duration-500">
@@ -250,7 +259,7 @@
 
                 <!-- Product 3 -->
                 <div
-                    class="bg-[#050505] p-8 flex flex-col justify-between group hover:bg-white hover:text-black transition-colors duration-500">
+                    class="hidden bg-[#050505] p-8 flex flex-col justify-between group hover:bg-white hover:text-black transition-colors duration-500">
                     <div>
                         <div
                             class="w-full aspect-video bg-white/5 mb-6 flex items-center justify-center group-hover:bg-black/5 transition-colors duration-500">
