@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signal Received | AGENCY</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;1,400&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050505;
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body class="antialiased min-h-screen flex flex-col items-center justify-center px-6">
+
+    <div class="text-center max-w-xl">
+        <h1 class="text-5xl md:text-7xl font-medium mb-6" style="letter-spacing: -0.04em; line-height: 0.95;">
+            Signal <span class="font-light italic font-serif text-white/80">Received.</span>
+        </h1>
+        <p class="text-lg text-white/60 mb-12">
+            Your transmission has been logged. We will establish contact shortly.
+        </p>
+        <a href="index.html"
+            class="inline-block border border-white/20 px-8 py-4 text-xs uppercase tracking-widest text-white hover:bg-white hover:text-black transition-colors duration-500">
+            Return to Base
+        </a>
+    </div>
+
+    <footer class="absolute bottom-6 text-center">
+        <p class="text-[10px] text-white/30 uppercase tracking-widest">&copy; 2025 Agency.</p>
+    </footer>
+
+</body>
+
+</html>
