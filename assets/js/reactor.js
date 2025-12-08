@@ -1,14 +1,42 @@
-// NEURAL REACTOR - Interactive Particle System
-let scene, camera, renderer, particles, particleSystem;
+// NEURAL REACTOR V2 - Enhanced Interactive Particle System
+let scene, camera, renderer, particleSystem;
 let isStabilizing = false;
 let stabilizeProgress = 0;
-const PARTICLE_COUNT = 2000;
-const HOLD_DURATION = 3000; // 3 seconds
+let startTime = 0;
+let currentTime = 0;
+let PARTICLE_COUNT = 2000;
+let HOLD_DURATION = 3000; // Default: 3 seconds
+let currentDifficulty = 'easy';
+let currentShape = 'points'; // points, cubes, stars
+const shapes = ['points', 'cubes', 'stars'];
+let shapeIndex = 0;
+
+// Particle System Data
+let particles = {
+    geometry: null,
+    positions: null,
+    velocities: null,
+    colors: null,
+    trails: []
+};
+
+// Audio Context (for sound effects)
+let audioContext;
+let successSound;
 
 // Initialize Three.js Scene
 function init() {
+    // Audio Setup
+    try {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        createSuccessSound();
+    } catch (e) {
+        console.log('Web Audio API not supported');
+    }
+
     // Scene Setup
     scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0x000000, 10, 100);
 
     // Camera Setup
     camera = new THREE.PerspectiveCamera(
@@ -25,18 +53,53 @@ function init() {
     renderer.setPixelRatio(window.devicePixelRatio);
     document.getElementById('canvas-container').appendChild(renderer.domElement);
 
+    // Ambient Light for glow effect
+    const ambientLight = new THREE.AmbientLight(0x00FF00, 0.3);
+    scene.add(ambientLight);
+
     // Create Particle System
     createParticles();
 
     // Event Listeners
     setupEventListeners();
 
+    // Load Leaderboard
+    loadLeaderboard();
+
     // Start Animation Loop
     animate();
 }
 
-// Create Particle System with BufferGeometry
+// Create Success Sound (Web Audio API)
+function createSuccessSound() {
+    // We'll play this on completion
+    successSound = function () {
+        if (!audioContext) return;
+
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+        oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
+        oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
+
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.5);
+    };
+}
+
+// Create Particle System with Selected Shape
 function createParticles() {
+    if (particleSystem) {
+        scene.remove(particleSystem);
+    }
+
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(PARTICLE_COUNT * 3);
     const velocities = new Float32Array(PARTICLE_COUNT * 3);
@@ -44,7 +107,6 @@ function createParticles() {
 
     // Initialize particle positions and velocities
     for (let i = 0; i < PARTICLE_COUNT * 3; i += 3) {
-        // Random positions in a sphere
         const radius = Math.random() * 40 + 10;
         const theta = Math.random() * Math.PI * 2;
         const phi = Math.random() * Math.PI;
@@ -53,51 +115,98 @@ function createParticles() {
         positions[i + 1] = radius * Math.sin(phi) * Math.sin(theta);
         positions[i + 2] = radius * Math.cos(phi);
 
-        // Random velocities for chaos
         velocities[i] = (Math.random() - 0.5) * 0.2;
         velocities[i + 1] = (Math.random() - 0.5) * 0.2;
         velocities[i + 2] = (Math.random() - 0.5) * 0.2;
 
-        // Initial color: Neon Green
-        colors[i] = 0;     // R
-        colors[i + 1] = 1; // G
-        colors[i + 2] = 0; // B
+        colors[i] = 0;
+        colors[i + 1] = 1;
+        colors[i + 2] = 0;
     }
 
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     geometry.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
     geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-    // Material
-    const material = new THREE.PointsMaterial({
-        size: 0.5,
-        vertexColors: true,
-        transparent: true,
-        opacity: 0.8,
-        blending: THREE.AdditiveBlending
-    });
+    let material;
 
-    particleSystem = new THREE.Points(geometry, material);
+    if (currentShape === 'points') {
+        material = new THREE.PointsMaterial({
+            size: 0.8,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.9,
+            blending: THREE.AdditiveBlending,
+            sizeAttenuation: true
+        });
+        particleSystem = new THREE.Points(geometry, material);
+    } else if (currentShape === 'cubes') {
+        const cubeGeometry = new THREE.BoxGeometry(0.3, 0.3, 0.3);
+        const instancedMesh = new THREE.InstancedMesh(
+            cubeGeometry,
+            new THREE.MeshBasicMaterial({
+                color: 0x00FF00,
+                transparent: true,
+                opacity: 0.8,
+                wireframe: true
+            }),
+            PARTICLE_COUNT
+        );
+
+        const matrix = new THREE.Matrix4();
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+            matrix.setPosition(
+                positions[i * 3],
+                positions[i * 3 + 1],
+                positions[i * 3 + 2]
+            );
+            instancedMesh.setMatrixAt(i, matrix);
+        }
+        instancedMesh.instanceMatrix.needsUpdate = true;
+        particleSystem = instancedMesh;
+        particleSystem.userData.isInstanced = true;
+    } else if (currentShape === 'stars') {
+        const starGeometry = new THREE.OctahedronGeometry(0.2);
+        const instancedMesh = new THREE.InstancedMesh(
+            starGeometry,
+            new THREE.MeshBasicMaterial({
+                color: 0x00FF00,
+                transparent: true,
+                opacity: 0.8
+            }),
+            PARTICLE_COUNT
+        );
+
+        const matrix = new THREE.Matrix4();
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+            matrix.setPosition(
+                positions[i * 3],
+                positions[i * 3 + 1],
+                positions[i * 3 + 2]
+            );
+            instancedMesh.setMatrixAt(i, matrix);
+        }
+        instancedMesh.instanceMatrix.needsUpdate = true;
+        particleSystem = instancedMesh;
+        particleSystem.userData.isInstanced = true;
+    }
+
     scene.add(particleSystem);
 
-    particles = {
-        geometry: geometry,
-        positions: positions,
-        velocities: velocities,
-        colors: colors
-    };
+    particles.geometry = geometry;
+    particles.positions = positions;
+    particles.velocities = velocities;
+    particles.colors = colors;
 }
 
 // Setup Event Listeners
 function setupEventListeners() {
     const btn = document.getElementById('stabilize-btn');
 
-    // Mouse Events
     btn.addEventListener('mousedown', startStabilizing);
     btn.addEventListener('mouseup', stopStabilizing);
     btn.addEventListener('mouseleave', stopStabilizing);
 
-    // Touch Events (Mobile)
     btn.addEventListener('touchstart', (e) => {
         e.preventDefault();
         startStabilizing();
@@ -108,17 +217,55 @@ function setupEventListeners() {
     });
     btn.addEventListener('touchcancel', stopStabilizing);
 
-    // Window Resize
     window.addEventListener('resize', onWindowResize);
 
-    // Form Submit
     const form = document.getElementById('unlock-form');
     form.addEventListener('submit', handleFormSubmit);
+
+    // Shape cycling on button click
+    btn.addEventListener('dblclick', cycleShape);
 }
+
+// Cycle through shapes
+function cycleShape() {
+    shapeIndex = (shapeIndex + 1) % shapes.length;
+    currentShape = shapes[shapeIndex];
+    createParticles();
+
+    const shapeNames = { 'points': '● POINTS', 'cubes': '■ CUBES', 'stars': '★ STARS' };
+    document.getElementById('shape-indicator').textContent = shapeNames[currentShape];
+}
+
+// Set Difficulty
+window.setDifficulty = function (level) {
+    currentDifficulty = level;
+
+    // Update durations
+    const durations = { 'easy': 3000, 'medium': 5000, 'hard': 10000 };
+    HOLD_DURATION = durations[level];
+
+    // Update UI
+    ['easy', 'medium', 'hard'].forEach(lvl => {
+        const btn = document.getElementById(`diff-${lvl}`);
+        if (lvl === level) {
+            btn.classList.add('bg-[#00FF00]/10', 'border-[#00FF00]', 'text-[#00FF00]');
+            btn.classList.remove('border-white/20', 'text-white/50');
+        } else {
+            btn.classList.remove('bg-[#00FF00]/10', 'border-[#00FF00]', 'text-[#00FF00]');
+            btn.classList.add('border-white/20', 'text-white/50');
+        }
+    });
+
+    // Reset if currently stabilizing
+    if (isStabilizing) {
+        stopStabilizing();
+    }
+};
 
 // Start Stabilizing
 function startStabilizing() {
     isStabilizing = true;
+    startTime = Date.now();
     document.getElementById('status-text').textContent = 'SYSTEM STATUS: STABILIZING...';
 }
 
@@ -129,6 +276,7 @@ function stopStabilizing() {
         stabilizeProgress = 0;
         document.getElementById('status-text').textContent = 'SYSTEM STATUS: UNSTABLE';
         document.getElementById('progress-bar').style.width = '0%';
+        document.getElementById('timer-text').textContent = 'TIME: 0.00s';
 
         // Explosion effect
         for (let i = 0; i < PARTICLE_COUNT * 3; i += 3) {
@@ -145,9 +293,12 @@ function animate() {
     requestAnimationFrame(animate);
     time += 0.01;
 
-    // Update Stabilize Progress
+    // Update Timer
     if (isStabilizing) {
-        stabilizeProgress += 100 / (HOLD_DURATION / 16.67); // ~60fps
+        currentTime = (Date.now() - startTime) / 1000;
+        document.getElementById('timer-text').textContent = `TIME: ${currentTime.toFixed(2)}s`;
+
+        stabilizeProgress = (currentTime * 1000 / HOLD_DURATION) * 100;
         if (stabilizeProgress >= 100) {
             stabilizeProgress = 100;
             completeStabilization();
@@ -159,7 +310,7 @@ function animate() {
     updateParticles();
 
     // Rotate Camera
-    const rotationSpeed = isStabilizing ? 0.01 : 0.002;
+    const rotationSpeed = isStabilizing ? 0.015 : 0.002;
     camera.position.x = Math.sin(time * rotationSpeed) * 50;
     camera.position.z = Math.cos(time * rotationSpeed) * 50;
     camera.lookAt(0, 0, 0);
@@ -175,34 +326,28 @@ function updateParticles() {
 
     for (let i = 0; i < PARTICLE_COUNT * 3; i += 3) {
         if (isStabilizing) {
-            // Lerp toward center (0, 0, 0)
             const lerpFactor = 0.05;
             positions[i] += (0 - positions[i]) * lerpFactor;
             positions[i + 1] += (0 - positions[i + 1]) * lerpFactor;
             positions[i + 2] += (0 - positions[i + 2]) * lerpFactor;
 
-            // Shift color to white
             const colorLerp = 0.02;
-            colors[i] += (1 - colors[i]) * colorLerp;     // R -> 1
-            colors[i + 1] += (1 - colors[i + 1]) * colorLerp; // G stays 1
-            colors[i + 2] += (1 - colors[i + 2]) * colorLerp; // B -> 1
+            colors[i] += (1 - colors[i]) * colorLerp;
+            colors[i + 1] += (1 - colors[i + 1]) * colorLerp;
+            colors[i + 2] += (1 - colors[i + 2]) * colorLerp;
         } else {
-            // Chaos: Brownian motion
             positions[i] += velocities[i];
             positions[i + 1] += velocities[i + 1];
             positions[i + 2] += velocities[i + 2];
 
-            // Random walk
             velocities[i] += (Math.random() - 0.5) * 0.05;
             velocities[i + 1] += (Math.random() - 0.5) * 0.05;
             velocities[i + 2] += (Math.random() - 0.5) * 0.05;
 
-            // Damping
             velocities[i] *= 0.99;
             velocities[i + 1] *= 0.99;
             velocities[i + 2] *= 0.99;
 
-            // Boundary check
             const maxDist = 60;
             const dist = Math.sqrt(
                 positions[i] ** 2 +
@@ -215,7 +360,6 @@ function updateParticles() {
                 velocities[i + 2] *= -0.5;
             }
 
-            // Reset color to green
             const colorLerp = 0.05;
             colors[i] += (0 - colors[i]) * colorLerp;
             colors[i + 1] += (1 - colors[i + 1]) * colorLerp;
@@ -225,6 +369,20 @@ function updateParticles() {
 
     particles.geometry.attributes.position.needsUpdate = true;
     particles.geometry.attributes.color.needsUpdate = true;
+
+    // Update instanced meshes
+    if (particleSystem.userData.isInstanced) {
+        const matrix = new THREE.Matrix4();
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+            matrix.setPosition(
+                positions[i * 3],
+                positions[i * 3 + 1],
+                positions[i * 3 + 2]
+            );
+            particleSystem.setMatrixAt(i, matrix);
+        }
+        particleSystem.instanceMatrix.needsUpdate = true;
+    }
 }
 
 // Complete Stabilization
@@ -232,12 +390,61 @@ function completeStabilization() {
     isStabilizing = false;
     document.getElementById('status-text').textContent = 'SYSTEM STATUS: STABLE';
 
+    // Play Success Sound
+    if (successSound) {
+        successSound();
+    }
+
+    // Save to Leaderboard
+    saveScore(currentTime);
+
     // Flash white
     document.body.style.backgroundColor = '#FFFFFF';
     setTimeout(() => {
         document.body.style.backgroundColor = '#000000';
         showModal();
     }, 200);
+}
+
+// Save Score to Leaderboard
+function saveScore(time) {
+    const scores = JSON.parse(localStorage.getItem('reactorScores') || '[]');
+    scores.push({
+        time: time,
+        difficulty: currentDifficulty,
+        shape: currentShape,
+        date: new Date().toISOString()
+    });
+
+    // Sort by time (fastest first)
+    scores.sort((a, b) => a.time - b.time);
+
+    // Keep top 5
+    const topScores = scores.slice(0, 5);
+    localStorage.setItem('reactorScores', JSON.stringify(topScores));
+
+    loadLeaderboard();
+}
+
+// Load Leaderboard
+function loadLeaderboard() {
+    const scores = JSON.parse(localStorage.getItem('reactorScores') || '[]');
+    const leaderboardEl = document.getElementById('leaderboard');
+
+    if (scores.length === 0) {
+        leaderboardEl.innerHTML = '<div class="text-white/30">No records yet...</div>';
+        return;
+    }
+
+    const difficultyEmoji = { 'easy': '●', 'medium': '●●', 'hard': '●●●' };
+
+    leaderboardEl.innerHTML = scores.map((score, index) => `
+        <div class="flex justify-between items-center">
+            <span class="text-[#00FF00]">#${index + 1}</span>
+            <span>${score.time.toFixed(2)}s</span>
+            <span class="text-xs">${difficultyEmoji[score.difficulty]}</span>
+        </div>
+    `).join('');
 }
 
 // Show Success Modal
@@ -251,20 +458,17 @@ function handleFormSubmit(e) {
     const form = e.target;
     const formData = new FormData(form);
 
-    // Submit to Web3Forms
     fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         body: formData
     })
         .then(response => response.json())
         .then(data => {
-            // Hide form, show code
             document.getElementById('unlock-form').classList.add('hidden');
             document.getElementById('code-reveal').classList.remove('hidden');
         })
         .catch(error => {
             console.error('Error:', error);
-            // Show code anyway for demo
             document.getElementById('unlock-form').classList.add('hidden');
             document.getElementById('code-reveal').classList.remove('hidden');
         });
