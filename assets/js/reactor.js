@@ -1,38 +1,130 @@
-// NEURAL REACTOR V2 - Enhanced Interactive Particle System
+// NEURAL REACTOR V3 - Tiered Rewards + Procedural Audio + Haptics
 let scene, camera, renderer, particleSystem;
 let isStabilizing = false;
 let stabilizeProgress = 0;
 let startTime = 0;
 let currentTime = 0;
 let PARTICLE_COUNT = 2000;
-let HOLD_DURATION = 3000; // Default: 3 seconds
-let currentDifficulty = 'easy';
-let currentShape = 'points'; // points, cubes, stars
+let currentShape = 'points';
 const shapes = ['points', 'cubes', 'stars'];
 let shapeIndex = 0;
+
+// DIFFICULTY CONFIGURATION
+const DIFFICULTIES = {
+    'easy': { duration: 3000, code: 'AGENT_10', percent: '10%', level: 'EASY' },
+    'medium': { duration: 6000, code: 'AGENT_15', percent: '15%', level: 'MEDIUM' },
+    'hard': { duration: 10000, code: 'AGENT_20', percent: '20%', level: 'HARD' }
+};
+let currentDifficulty = DIFFICULTIES.easy;
 
 // Particle System Data
 let particles = {
     geometry: null,
     positions: null,
     velocities: null,
-    colors: null,
-    trails: []
+    colors: null
 };
 
-// Audio Context (for sound effects)
-let audioContext;
-let successSound;
+// Sound Manager Class
+class SoundManager {
+    constructor() {
+        try {
+            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            this.revOscillator = null;
+            this.revGainNode = null;
+            this.supported = true;
+        } catch (e) {
+            console.log('Web Audio API not supported');
+            this.supported = false;
+        }
+    }
+
+    startRevSound() {
+        if (!this.supported || this.revOscillator) return;
+
+        this.revOscillator = this.audioContext.createOscillator();
+        this.revGainNode = this.audioContext.createGain();
+
+        this.revOscillator.type = 'sawtooth';
+        this.revOscillator.frequency.setValueAtTime(100, this.audioContext.currentTime);
+        this.revOscillator.connect(this.revGainNode);
+        this.revGainNode.connect(this.audioContext.destination);
+
+        this.revGainNode.gain.setValueAtTime(0.05, this.audioContext.currentTime);
+
+        this.revOscillator.start();
+    }
+
+    updateRevSound(progress) {
+        if (!this.supported || !this.revOscillator) return;
+
+        const currentFreq = 100 + (progress * 5); // 100Hz to 600Hz
+        const currentGain = 0.05 + (progress * 0.35); // 0.05 to 0.4
+
+        this.revOscillator.frequency.setValueAtTime(currentFreq, this.audioContext.currentTime);
+        this.revGainNode.gain.setValueAtTime(currentGain, this.audioContext.currentTime);
+    }
+
+    stopRevSound() {
+        if (!this.supported || !this.revOscillator) return;
+
+        try {
+            this.revOscillator.stop();
+            this.revOscillator.disconnect();
+            this.revGainNode.disconnect();
+        } catch (e) {
+            // Already stopped
+        }
+        this.revOscillator = null;
+        this.revGainNode = null;
+    }
+
+    playDropSound() {
+        if (!this.supported) return;
+
+        const oscillator = this.audioContext.createOscillator();
+        const gainNode = this.audioContext.createGain();
+
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(40, this.audioContext.currentTime);
+        oscillator.connect(gainNode);
+        gainNode.connect(this.audioContext.destination);
+
+        gainNode.gain.setValueAtTime(0.5, this.audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 1);
+
+        oscillator.start(this.audioContext.currentTime);
+        oscillator.stop(this.audioContext.currentTime + 1);
+    }
+
+    playSuccessChime() {
+        if (!this.supported) return;
+
+        const oscillator = this.audioContext.createOscillator();
+        const gainNode = this.audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(this.audioContext.destination);
+
+        oscillator.frequency.setValueAtTime(523.25, this.audioContext.currentTime);
+        oscillator.frequency.setValueAtTime(659.25, this.audioContext.currentTime + 0.1);
+        oscillator.frequency.setValueAtTime(783.99, this.audioContext.currentTime + 0.2);
+
+        gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.5);
+
+        oscillator.start(this.audioContext.currentTime);
+        oscillator.stop(this.audioContext.currentTime + 0.5);
+    }
+}
+
+let soundManager;
+let vibrateInterval;
 
 // Initialize Three.js Scene
 function init() {
-    // Audio Setup
-    try {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        createSuccessSound();
-    } catch (e) {
-        console.log('Web Audio API not supported');
-    }
+    // Sound Manager Setup
+    soundManager = new SoundManager();
 
     // Scene Setup
     scene = new THREE.Scene();
@@ -53,7 +145,7 @@ function init() {
     renderer.setPixelRatio(window.devicePixelRatio);
     document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-    // Ambient Light for glow effect
+    // Ambient Light
     const ambientLight = new THREE.AmbientLight(0x00FF00, 0.3);
     scene.add(ambientLight);
 
@@ -70,31 +162,7 @@ function init() {
     animate();
 }
 
-// Create Success Sound (Web Audio API)
-function createSuccessSound() {
-    // We'll play this on completion
-    successSound = function () {
-        if (!audioContext) return;
-
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-
-        oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
-        oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
-        oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
-
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.5);
-    };
-}
-
-// Create Particle System with Selected Shape
+// Create Particle System
 function createParticles() {
     if (particleSystem) {
         scene.remove(particleSystem);
@@ -105,7 +173,10 @@ function createParticles() {
     const velocities = new Float32Array(PARTICLE_COUNT * 3);
     const colors = new Float32Array(PARTICLE_COUNT * 3);
 
-    // Initialize particle positions and velocities
+    // Chaos factor scales with difficulty
+    const chaosMultiplier = currentDifficulty === DIFFICULTIES.hard ? 1.5 :
+        currentDifficulty === DIFFICULTIES.medium ? 1.2 : 1.0;
+
     for (let i = 0; i < PARTICLE_COUNT * 3; i += 3) {
         const radius = Math.random() * 40 + 10;
         const theta = Math.random() * Math.PI * 2;
@@ -115,9 +186,9 @@ function createParticles() {
         positions[i + 1] = radius * Math.sin(phi) * Math.sin(theta);
         positions[i + 2] = radius * Math.cos(phi);
 
-        velocities[i] = (Math.random() - 0.5) * 0.2;
-        velocities[i + 1] = (Math.random() - 0.5) * 0.2;
-        velocities[i + 2] = (Math.random() - 0.5) * 0.2;
+        velocities[i] = (Math.random() - 0.5) * 0.2 * chaosMultiplier;
+        velocities[i + 1] = (Math.random() - 0.5) * 0.2 * chaosMultiplier;
+        velocities[i + 2] = (Math.random() - 0.5) * 0.2 * chaosMultiplier;
 
         colors[i] = 0;
         colors[i + 1] = 1;
@@ -222,7 +293,6 @@ function setupEventListeners() {
     const form = document.getElementById('unlock-form');
     form.addEventListener('submit', handleFormSubmit);
 
-    // Shape cycling on button click
     btn.addEventListener('dblclick', cycleShape);
 }
 
@@ -238,11 +308,10 @@ function cycleShape() {
 
 // Set Difficulty
 window.setDifficulty = function (level) {
-    currentDifficulty = level;
+    currentDifficulty = DIFFICULTIES[level];
 
-    // Update durations
-    const durations = { 'easy': 3000, 'medium': 5000, 'hard': 10000 };
-    HOLD_DURATION = durations[level];
+    // Update reward text
+    document.getElementById('reward-text').textContent = `REWARD: ${currentDifficulty.percent} OFF`;
 
     // Update UI
     ['easy', 'medium', 'hard'].forEach(lvl => {
@@ -256,17 +325,51 @@ window.setDifficulty = function (level) {
         }
     });
 
+    // Recreate particles with new chaos level
+    createParticles();
+
     // Reset if currently stabilizing
     if (isStabilizing) {
         stopStabilizing();
     }
 };
 
+// Haptics Functions
+function startVibration() {
+    if (navigator.vibrate) {
+        vibrateInterval = setInterval(() => {
+            navigator.vibrate([50, 50]);
+        }, 100);
+    }
+}
+
+function stopVibration() {
+    if (vibrateInterval) {
+        clearInterval(vibrateInterval);
+        vibrateInterval = null;
+    }
+    if (navigator.vibrate) {
+        navigator.vibrate(0);
+    }
+}
+
+function successVibration() {
+    if (navigator.vibrate) {
+        navigator.vibrate(500);
+    }
+}
+
 // Start Stabilizing
 function startStabilizing() {
     isStabilizing = true;
     startTime = Date.now();
     document.getElementById('status-text').textContent = 'SYSTEM STATUS: STABILIZING...';
+
+    // Start Audio Engine
+    soundManager.startRevSound();
+
+    // Start Haptics
+    startVibration();
 }
 
 // Stop Stabilizing
@@ -274,17 +377,34 @@ function stopStabilizing() {
     if (isStabilizing && stabilizeProgress < 100) {
         isStabilizing = false;
         stabilizeProgress = 0;
+        currentTime = 0;
         document.getElementById('status-text').textContent = 'SYSTEM STATUS: UNSTABLE';
-        document.getElementById('progress-bar').style.width = '0%';
         document.getElementById('timer-text').textContent = 'TIME: 0.00s';
+        updateCircularProgress(0);
+
+        // Stop Audio
+        soundManager.stopRevSound();
+
+        // Stop Haptics
+        stopVibration();
 
         // Explosion effect
+        const chaosMultiplier = currentDifficulty === DIFFICULTIES.hard ? 2 :
+            currentDifficulty === DIFFICULTIES.medium ? 1.5 : 1.0;
         for (let i = 0; i < PARTICLE_COUNT * 3; i += 3) {
-            particles.velocities[i] = (Math.random() - 0.5) * 2;
-            particles.velocities[i + 1] = (Math.random() - 0.5) * 2;
-            particles.velocities[i + 2] = (Math.random() - 0.5) * 2;
+            particles.velocities[i] = (Math.random() - 0.5) * 2 * chaosMultiplier;
+            particles.velocities[i + 1] = (Math.random() - 0.5) * 2 * chaosMultiplier;
+            particles.velocities[i + 2] = (Math.random() - 0.5) * 2 * chaosMultiplier;
         }
     }
+}
+
+// Update Circular Progress SVG
+function updateCircularProgress(percent) {
+    const circle = document.getElementById('progress-circle');
+    const circumference = 283; // 2 * π * r (r=45)
+    const offset = circumference - (percent / 100) * circumference;
+    circle.style.strokeDashoffset = offset;
 }
 
 // Animation Loop
@@ -293,17 +413,22 @@ function animate() {
     requestAnimationFrame(animate);
     time += 0.01;
 
-    // Update Timer
+    // Update Timer & Progress
     if (isStabilizing) {
         currentTime = (Date.now() - startTime) / 1000;
         document.getElementById('timer-text').textContent = `TIME: ${currentTime.toFixed(2)}s`;
 
-        stabilizeProgress = (currentTime * 1000 / HOLD_DURATION) * 100;
+        stabilizeProgress = (currentTime * 1000 / currentDifficulty.duration) * 100;
+
+        // Update Rev Sound
+        soundManager.updateRevSound(stabilizeProgress);
+
         if (stabilizeProgress >= 100) {
             stabilizeProgress = 100;
             completeStabilization();
         }
-        document.getElementById('progress-bar').style.width = stabilizeProgress + '%';
+
+        updateCircularProgress(stabilizeProgress);
     }
 
     // Update Particles
@@ -340,9 +465,12 @@ function updateParticles() {
             positions[i + 1] += velocities[i + 1];
             positions[i + 2] += velocities[i + 2];
 
-            velocities[i] += (Math.random() - 0.5) * 0.05;
-            velocities[i + 1] += (Math.random() - 0.5) * 0.05;
-            velocities[i + 2] += (Math.random() - 0.5) * 0.05;
+            const chaosMultiplier = currentDifficulty === DIFFICULTIES.hard ? 0.08 :
+                currentDifficulty === DIFFICULTIES.medium ? 0.06 : 0.05;
+
+            velocities[i] += (Math.random() - 0.5) * chaosMultiplier;
+            velocities[i + 1] += (Math.random() - 0.5) * chaosMultiplier;
+            velocities[i + 2] += (Math.random() - 0.5) * chaosMultiplier;
 
             velocities[i] *= 0.99;
             velocities[i + 1] *= 0.99;
@@ -370,7 +498,6 @@ function updateParticles() {
     particles.geometry.attributes.position.needsUpdate = true;
     particles.geometry.attributes.color.needsUpdate = true;
 
-    // Update instanced meshes
     if (particleSystem.userData.isInstanced) {
         const matrix = new THREE.Matrix4();
         for (let i = 0; i < PARTICLE_COUNT; i++) {
@@ -390,10 +517,16 @@ function completeStabilization() {
     isStabilizing = false;
     document.getElementById('status-text').textContent = 'SYSTEM STATUS: STABLE';
 
-    // Play Success Sound
-    if (successSound) {
-        successSound();
-    }
+    // Stop Rev Sound
+    soundManager.stopRevSound();
+
+    // Play Success Sounds
+    soundManager.playSuccessChime();
+    setTimeout(() => soundManager.playDropSound(), 300);
+
+    // Stop Vibrate Loop, Trigger Success Vibration
+    stopVibration();
+    successVibration();
 
     // Save to Leaderboard
     saveScore(currentTime);
@@ -411,15 +544,12 @@ function saveScore(time) {
     const scores = JSON.parse(localStorage.getItem('reactorScores') || '[]');
     scores.push({
         time: time,
-        difficulty: currentDifficulty,
+        difficulty: currentDifficulty.level.toLowerCase(),
         shape: currentShape,
         date: new Date().toISOString()
     });
 
-    // Sort by time (fastest first)
     scores.sort((a, b) => a.time - b.time);
-
-    // Keep top 5
     const topScores = scores.slice(0, 5);
     localStorage.setItem('reactorScores', JSON.stringify(topScores));
 
@@ -447,8 +577,17 @@ function loadLeaderboard() {
     `).join('');
 }
 
-// Show Success Modal
+// Show Success Modal with Dynamic Content
 function showModal() {
+    // Update modal with current difficulty reward
+    document.getElementById('difficulty-conquered').textContent =
+        `DIFFICULTY CONQUERED: ${currentDifficulty.level}`;
+    document.getElementById('reward-unlocked').textContent =
+        `REWARD UNLOCKED: ${currentDifficulty.percent} OFF`;
+    document.getElementById('discount-code').textContent = currentDifficulty.code;
+    document.getElementById('discount-description').textContent =
+        `${currentDifficulty.percent} off all AI architecture services`;
+
     document.getElementById('success-modal').classList.remove('hidden');
 }
 
