@@ -51,9 +51,18 @@
         </div>
     </div>
 
-    <!-- Difficulty Selector (Responsive Stack) -->
+    <!-- Leaderboard (Mobile: Top-Left, Desktop: Bottom-Left) -->
     <div
-        class="fixed right-6 top-1/2 -translate-y-1/2 flex flex-col gap-4 z-20 md:bottom-32 md:left-1/2 md:-translate-x-1/2 md:flex-row md:top-auto md:right-auto md:translate-y-0">
+        class="fixed top-24 left-6 p-4 border border-[#00FF00]/30 rounded-lg bg-black/50 backdrop-blur-md z-20 md:bottom-6 md:left-6 md:top-auto md:bg-black/70 md:backdrop-blur-xl md:border-white/10 w-48 md:w-64">
+        <div class="text-[#00FF00] font-mono text-xs tracking-widest mb-3">LEADERBOARD</div>
+        <div id="leaderboard" class="space-y-2 text-white/60 font-mono text-xs">
+            <div class="text-white/30">No records yet...</div>
+        </div>
+    </div>
+
+    <!-- Difficulty Selector (Mobile: Right-Stack, Desktop: Bottom-Center) -->
+    <div
+        class="fixed right-6 top-1/2 -translate-y-1/2 flex flex-col gap-3 z-20 md:bottom-32 md:left-1/2 md:-translate-x-1/2 md:flex-row md:top-auto md:right-auto md:translate-y-0 md:gap-6">
         <button onclick="setDifficulty('easy')" id="diff-easy" data-difficulty="easy"
             class="px-6 py-2 text-xs tracking-widest bg-black/50 backdrop-blur-md border border-[#00FF00] text-[#00FF00] hover:bg-white/10 transition-colors rounded-full">
             EASY • 10%
@@ -68,16 +77,10 @@
         </button>
     </div>
 
-    <!-- Leaderboard -->
-    <div class="fixed bottom-6 right-6 z-10 glassmorphic p-4 rounded-lg w-64">
-        <div class="text-[#00FF00] font-mono text-xs tracking-widest mb-3">LEADERBOARD</div>
-        <div id="leaderboard" class="space-y-2 text-white/60 font-mono text-xs">
-            <div class="text-white/30">No records yet...</div>
-        </div>
-    </div>
 
-    <!-- Stabilize Button with Circular Progress -->
-    <div class="fixed bottom-12 left-1/2 -translate-x-1/2 z-30 w-64 text-center">
+
+    <!-- Stabilize Button (Bottom-Center - Isolated Thumb Zone) -->
+    <div class="fixed bottom-16 left-1/2 -translate-x-1/2 z-30 w-64 text-center">
         <div class="relative">
             <!-- Circular Progress SVG -->
             <svg class="absolute -inset-4 w-[calc(100%+2rem)] h-[calc(100%+2rem)]" viewBox="0 0 100 100">
