@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Reactor | Craden Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000000;
+            color: #00FF00;
+            overflow: hidden;
+        }
+
+        #canvas-container {
+            cursor: default;
+        }
+
+        .glassmorphic {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+
+<body class="antialiased">
+
+    <!-- Three.js Canvas Container -->
+    <div id="canvas-container" class="fixed inset-0 z-0"></div>
+
+    <!-- Status Overlay -->
+    <div class="fixed top-6 left-6 text-[#00FF00] font-mono text-xs tracking-widest z-10" id="status-text">
+        SYSTEM STATUS: UNSTABLE
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="fixed top-20 left-6 w-64 h-1 bg-white/10 z-10">
+        <div id="progress-bar" class="h-full bg-[#00FF00] transition-all duration-100" style="width: 0%"></div>
+    </div>
+
+    <!-- Stabilize Button -->
+    <div class="fixed bottom-12 left-1/2 -translate-x-1/2 border border-[#00FF00]/50 text-[#00FF00] px-8 py-4 rounded-full text-xs tracking-widest cursor-pointer select-none hover:bg-[#00FF00]/10 transition-colors z-10"
+        id="stabilize-btn">
+        HOLD TO STABILIZE
+    </div>
+
+    <!-- Success Modal (Hidden) -->
+    <div id="success-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-6">
+        <div class="glassmorphic p-8 rounded-2xl max-w-md w-full text-center">
+            <h2 class="text-2xl font-bold text-white mb-4 tracking-widest">NEURAL SYNC COMPLETE</h2>
+            <p class="text-white/60 mb-8 text-sm">You've mastered the chaos. Enter your email to reveal your exclusive
+                code.</p>
+
+            <form id="unlock-form" action="https://api.web3forms.com/submit" method="POST" class="space-y-4">
+                <input type="hidden" name="access_key" value="0b61ae93-ef3b-469b-882d-384f5016562a">
+                <input type="hidden" name="subject" value="Neural Reactor - Code Unlocked">
+
+                <input type="email" name="email" required placeholder="your@email.com"
+                    class="w-full bg-black/50 border border-white/20 px-4 py-3 rounded-lg text-white placeholder-white/30 focus:border-[#00FF00] focus:outline-none transition-colors">
+
+                <button type="submit"
+                    class="w-full bg-[#00FF00] text-black px-6 py-3 rounded-lg font-bold tracking-widest hover:bg-white transition-all">
+                    REVEAL CODE
+                </button>
+            </form>
+
+            <div id="code-reveal" class="hidden">
+                <div class="text-4xl font-mono font-bold text-[#00FF00] mb-4 animate-pulse">
+                    AGENT_ARCHITECT_20
+                </div>
+                <p class="text-white/60 text-sm">20% off all AI architecture services</p>
+                <a href="index.html"
+                    class="inline-block mt-6 text-[#00FF00] hover:text-white transition-colors text-xs tracking-widest">
+                    ← RETURN TO BASE
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="/assets/js/reactor.js"></script>
+</body>
+
+</html>
