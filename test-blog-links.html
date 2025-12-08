@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Files Test - Craden Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-900 text-white p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-4xl font-bold mb-8">Blog Files Test Page</h1>
+
+        <div class="space-y-4">
+            <h2 class="text-2xl font-semibold mb-4">Test These Links:</h2>
+
+            <div class="bg-gray-800 p-4 rounded">
+                <h3 class="font-bold mb-2">WITH Clean URLs (Should Work):</h3>
+                <ul class="space-y-2">
+                    <li><a href="/blog/ai-agents-2025" class="text-blue-400 hover:underline">/blog/ai-agents-2025</a>
+                    </li>
+                    <li><a href="/blog/seo-stack-2026" class="text-blue-400 hover:underline">/blog/seo-stack-2026</a>
+                    </li>
+                    <li><a href="/blog/automation-extinction"
+                            class="text-blue-400 hover:underline">/blog/automation-extinction</a></li>
+                </ul>
+            </div>
+
+            <div class="bg-gray-800 p-4 rounded">
+                <h3 class="font-bold mb-2">WITH .html Extension (Will 404 with cleanUrls):</h3>
+                <ul class="space-y-2">
+                    <li><a href="/blog/ai-agents-2025.html"
+                            class="text-red-400 hover:underline">/blog/ai-agents-2025.html</a></li>
+                    <li><a href="/blog/seo-stack-2026.html"
+                            class="text-red-400 hover:underline">/blog/seo-stack-2026.html</a></li>
+                    <li><a href="/blog/automation-extinction.html"
+                            class="text-red-400 hover:underline">/blog/automation-extinction.html</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="mt-8 bg-yellow-900 p-4 rounded">
+            <p class="font-bold">Current Configuration:</p>
+            <p>vercel.json has "cleanUrls": true</p>
+            <p>This means .html extensions are stripped automatically</p>
+        </div>
+    </div>
+</body>
+
+</html>
