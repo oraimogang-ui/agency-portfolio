@@ -140,10 +140,14 @@
                         </div>
                     </div>
 
-                    <button onclick="runSimulation()" id="runButton"
-                        class="w-full py-4 border border-purple-500/50 bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 font-mono text-sm tracking-widest transition-all rounded group animate-pulse">
-                        <span class="group-hover:hidden">▶ RUN PREDICTION ALGORITHM</span>
-                        <span class="hidden group-hover:inline">INITIALIZING NEURAL NET...</span>
+                    <button onclick="runSimulation()"
+                        class="group w-full py-4 border border-purple-500/30 bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 font-mono text-sm tracking-widest transition-all rounded relative overflow-hidden">
+                        <span id="btn-text" class="relative z-10 group-hover:text-white transition-colors">INITIATE
+                            PREDICTION MODEL</span>
+
+                        <div
+                            class="absolute inset-0 bg-purple-500/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                        </div>
                     </button>
                 </div>
 
@@ -178,16 +182,27 @@
     </main>
 
     <script>
-        // Simple Interaction Logic
         function runSimulation() {
-            const bar = document.getElementById('predictionBar');
-            // Reset
-            bar.style.height = '0%';
+            const btnText = document.getElementById('btn-text');
+            const predictionBar = document.getElementById('predictionBar'); // Ensure your purple bar has this ID
 
-            // Simulate Calculation
+            // 1. Change UI to "Processing" state
+            btnText.innerText = "PROCESSING DATA STREAMS...";
+            btnText.classList.add("animate-pulse");
+
+            // 2. Simulate "Thinking" Latency (800ms)
             setTimeout(() => {
-                bar.style.height = '85%';
-            }, 300);
+                // 3. Trigger the Graph Animation (Grow the purple bar)
+                if (predictionBar) {
+                    predictionBar.style.height = "85%"; // Shoots up
+                    predictionBar.classList.remove("opacity-0"); // Ensure it's visible
+                }
+
+                // 4. Final State
+                btnText.innerText = "PREDICTION COMPLETE: CHURN RISK 42%";
+                btnText.classList.remove("animate-pulse");
+                btnText.classList.add("text-emerald-400"); // Success color
+            }, 800);
         }
     </script>
 </body>
