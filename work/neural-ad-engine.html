@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-black">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Ad Engine // Craden Studio</title>
+    <meta name="description" content="High-frequency trading system for programmatic advertising.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .grid-dots {
+            background-image: radial-gradient(circle, rgba(16, 185, 129, 0.15) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+    </style>
+</head>
+
+<body class="text-emerald-400 antialiased selection:bg-emerald-500 selection:text-black">
+
+    <nav class="fixed w-full z-50 top-0 border-b border-emerald-500/20 bg-black/90 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
+            <a href="../index.html"
+                class="text-xs text-emerald-500/70 hover:text-emerald-400 transition-colors tracking-wider">← RETURN TO
+                BASE</a>
+            <div class="flex items-center gap-3">
+                <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                <span class="text-[10px] text-emerald-500/50">MARKET: LIVE</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-24 pb-16 px-6 relative overflow-hidden min-h-screen">
+        <div class="absolute inset-0 grid-dots opacity-30 pointer-events-none"></div>
+
+        <div class="max-w-6xl mx-auto mb-12 relative z-10">
+            <div class="inline-block px-2 py-1 border border-emerald-500/40 bg-emerald-500/10 rounded mb-4">
+                <span class="text-[10px] text-emerald-300 tracking-widest">SYSTEM: NEURAL_AD_ENGINE v2.1</span>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-bold text-emerald-400 tracking-tight mb-6">
+                Real-Time Bidding<br>
+                <span class="text-emerald-500/50">at HFT Speed.</span>
+            </h1>
+            <p class="text-base text-emerald-300/80 leading-relaxed max-w-2xl">
+                Algorithmic trading system that optimizes programmatic ad bids in sub-100ms. Built for a FinTech client
+                scaling to $2M daily ad spend.
+            </p>
+        </div>
+
+        <!-- Live Ticker Grid -->
+        <div class="max-w-6xl mx-auto border border-emerald-500/20 bg-black rounded-lg p-6 mb-12">
+            <div class="flex items-center justify-between mb-6 pb-4 border-b border-emerald-500/20">
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                    <span class="text-xs text-emerald-400">LIVE MARKET DATA</span>
+                </div>
+                <span class="text-[10px] text-emerald-500/50" id="timestamp"></span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="border border-emerald-500/20 bg-emerald-500/5 rounded p-4">
+                    <div class="text-[10px] text-emerald-500/70 mb-2">AVG LATENCY</div>
+                    <div class="text-2xl font-bold text-emerald-400" id="latency">12ms</div>
+                </div>
+                <div class="border border-emerald-500/20 bg-emerald-500/5 rounded p-4">
+                    <div class="text-[10px] text-emerald-500/70 mb-2">BIDS / SECOND</div>
+                    <div class="text-2xl font-bold text-emerald-400" id="bidsPerSec">1,247</div>
+                </div>
+                <div class="border border-emerald-500/20 bg-emerald-500/5 rounded p-4">
+                    <div class="text-[10px] text-emerald-500/70 mb-2">WIN RATE</div>
+                    <div class="text-2xl font-bold text-emerald-400">34.2%</div>
+                </div>
+            </div>
+
+            <div class="space-y-2 font-mono text-xs" id="tickerContainer">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- System Log Output -->
+        <div class="max-w-6xl mx-auto border border-emerald-500/20 bg-black rounded-lg p-6">
+            <div class="text-xs text-emerald-400 mb-3 flex items-center gap-2">
+                <span>&gt; SYSTEM LOG</span>
+                <div class="w-2 h-2 bg-emerald-500 animate-pulse"></div>
+            </div>
+            <div class="space-y-1 text-[11px] text-emerald-500/70 max-h-48 overflow-y-auto" id="systemLog">
+                <div>&gt; Neural network initialized (12 layers, 4M parameters)</div>
+                <div>&gt; Connected to RTB exchange: Google Ad Manager</div>
+                <div>&gt; Bid optimizer active (RL-DQN model)</div>
+                <div>&gt; Monitoring 2,847 active campaigns</div>
+                <div class="text-emerald-400">&gt; System ready. Awaiting bid requests...</div>
+            </div>
+        </div>
+
+        <!-- Tech Stack -->
+        <div class="max-w-6xl mx-auto mt-16 grid grid-cols-1 md:grid-cols-2 gap-8 text-xs">
+            <div>
+                <h3 class="text-emerald-400 font-bold mb-3">Infrastructure</h3>
+                <ul class="space-y-1 text-emerald-300/70">
+                    <li class="flex items-center gap-2"><span class="text-emerald-500">→</span> Rust (Core Engine)</li>
+                    <li class="flex items-center gap-2"><span class="text-emerald-500">→</span> Redis (Sub-ms Caching)
+                    </li>
+                    <li class="flex items-center gap-2"><span class="text-emerald-500">→</span> TensorFlow (ML Model)
+                    </li>
+                    <li class="flex items-center gap-2"><span class="text-emerald-500">→</span> AWS Graviton (ARM
+                        Servers)</li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-emerald-400 font-bold mb-3">Results</h3>
+                <p class="text-emerald-300/70 leading-relaxed">
+                    By deploying a Rust-based bidding engine, we reduced server response times by 85%. The system now
+                    handles 50,000 requests/second with P99 latency under 20ms.
+                </p>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const tickers = ['AAPL', 'GOOGL', 'MSFT', 'TSLA', 'AMZN', 'META', 'NVDA', 'AMD'];
+        const prices = {
+            'AAPL': 142.50,
+            'GOOGL': 131.20,
+            'MSFT': 378.90,
+            'TSLA': 245.80,
+            'AMZN': 153.40,
+            'META': 487.20,
+            'NVDA': 495.10,
+            'AMD': 142.30
+        };
+
+        function updateTickers() {
+            const container = document.getElementById('tickerContainer');
+            container.innerHTML = tickers.map(ticker => {
+                const change = (Math.random() - 0.5) * 5;
+                prices[ticker] += change;
+                const color = change >= 0 ? 'text-green-400' : 'text-red-400';
+                const sign = change >= 0 ? '+' : '';
+                return `
+                    <div class="flex justify-between items-center border-b border-emerald-500/10 pb-2">
+                        <span class="text-emerald-300">${ticker}</span>
+                        <div class="flex items-center gap-4">
+                            <span class="text-emerald-400">$${prices[ticker].toFixed(2)}</span>
+                            <span class="${color} text-[10px]">${sign}${change.toFixed(2)}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateMetrics() {
+            document.getElementById('latency').textContent = `${Math.floor(Math.random() * 10 + 10)}ms`;
+            document.getElementById('bidsPerSec').textContent = `${(Math.random() * 500 + 1000).toFixed(0).toLocaleString()}`;
+        }
+
+        function updateTimestamp() {
+            const now = new Date();
+            document.getElementById('timestamp').textContent = now.toLocaleTimeString('en-US', { hour12: false });
+        }
+
+        // Initialize
+        updateTickers();
+        updateTimestamp();
+
+        // Update intervals
+        setInterval(updateTickers, 200);  // HFT speed
+        setInterval(updateMetrics, 1000);
+        setInterval(updateTimestamp, 1000);
+    </script>
+</body>
+
+</html>

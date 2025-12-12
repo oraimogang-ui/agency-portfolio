@@ -167,13 +167,42 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Card 1: Sentient CRM (Dashboard UI) -->
                 <a href="work/sentient-crm.html"
                     class="group block relative border border-white/5 bg-zinc-900/50 hover:border-purple-500/50 transition-all duration-500 overflow-hidden">
-                    <div
-                        class="h-64 w-full bg-gradient-to-br from-indigo-900 via-purple-950 to-zinc-950 group-hover:scale-105 transition-transform duration-700 relative">
-                        <div
-                            class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPjwvc3ZnPg==')] opacity-30">
+                    <div class="h-64 w-full bg-zinc-950 relative p-4">
+                        <!-- Mini Dashboard Interface -->
+                        <div class="flex h-full gap-2">
+                            <!-- Sidebar -->
+                            <div class="w-1/4 border border-white/10 bg-black/40 rounded p-2 space-y-2">
+                                <div class="h-2 w-3/4 bg-white/20 rounded"></div>
+                                <div class="h-2 w-1/2 bg-white/10 rounded"></div>
+                                <div class="h-px bg-white/10 my-3"></div>
+                                <div class="h-3 w-full bg-purple-500/30 border-l-2 border-purple-500 rounded-r"></div>
+                                <div class="h-3 w-full bg-white/5 rounded"></div>
+                                <div class="h-3 w-full bg-white/5 rounded"></div>
+                            </div>
+                            <!-- Main Area -->
+                            <div class="flex-1 space-y-2">
+                                <!-- Top Nav -->
+                                <div
+                                    class="h-8 border border-white/10 bg-black/40 rounded flex items-center px-2 gap-1">
+                                    <div class="w-1.5 h-1.5 rounded-full bg-red-500/50"></div>
+                                    <div class="w-1.5 h-1.5 rounded-full bg-yellow-500/50"></div>
+                                    <div class="w-1.5 h-1.5 rounded-full bg-green-500/50"></div>
+                                </div>
+                                <!-- Chart Area -->
+                                <div
+                                    class="flex-1 border border-white/10 bg-black/40 rounded p-2 flex items-end justify-between gap-1">
+                                    <div class="w-full bg-purple-500/30 h-[30%] rounded-t"></div>
+                                    <div class="w-full bg-purple-500/30 h-[50%] rounded-t"></div>
+                                    <div class="w-full bg-purple-500/30 h-[40%] rounded-t"></div>
+                                    <div class="w-full bg-purple-500/50 h-[70%] rounded-t"></div>
+                                    <div class="w-full bg-purple-500/70 h-[85%] rounded-t animate-pulse"></div>
+                                </div>
+                            </div>
                         </div>
+                        <!-- Badge -->
                         <div class="absolute bottom-4 left-4">
                             <span
                                 class="px-2 py-1 bg-black/50 border border-white/10 text-xs text-purple-300 font-mono rounded">AI
@@ -188,16 +217,41 @@
                     </div>
                 </a>
 
-                <div
-                    class="group block relative border border-white/5 bg-zinc-900/50 hover:border-emerald-500/50 transition-all duration-500 overflow-hidden cursor-not-allowed opacity-75">
-                    <div
-                        class="h-64 w-full bg-gradient-to-bl from-emerald-900 via-teal-950 to-zinc-950 group-hover:scale-105 transition-transform duration-700 relative">
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <div
-                                class="w-32 h-32 border border-emerald-500/20 rounded-full flex items-center justify-center">
-                                <div class="w-24 h-24 border border-emerald-500/40 rounded-full"></div>
+                <!-- Card 2: Neural Ad Engine (Terminal UI) -->
+                <a href="work/neural-ad-engine.html"
+                    class="group block relative border border-white/5 bg-zinc-900/50 hover:border-emerald-500/50 transition-all duration-500 overflow-hidden">
+                    <div class="h-64 w-full bg-black relative p-4 font-mono text-xs">
+                        <!-- Terminal Interface -->
+                        <div
+                            class="h-full border border-emerald-500/20 bg-black rounded p-3 space-y-1 text-emerald-400">
+                            <div class="flex items-center gap-2 mb-2">
+                                <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                                <span class="text-[10px]">NEURAL_AD_ENGINE v2.1</span>
+                            </div>
+                            <div class="text-emerald-500/70">&gt; Initializing bid optimizer...</div>
+                            <div class="text-emerald-500/70">&gt; Loading market data...</div>
+                            <div class="h-px bg-emerald-500/20 my-2"></div>
+                            <div class="flex justify-between text-emerald-300">
+                                <span>AAPL</span>
+                                <span class="text-green-400">+$142.50</span>
+                            </div>
+                            <div class="flex justify-between text-emerald-300">
+                                <span>GOOGL</span>
+                                <span class="text-red-400">-$131.20</span>
+                            </div>
+                            <div class="flex justify-between text-emerald-300">
+                                <span>TSLA</span>
+                                <span class="text-green-400">+$245.80</span>
+                            </div>
+                            <div class="h-px bg-emerald-500/20 my-2"></div>
+                            <div class="text-emerald-500/70">&gt; Avg latency: <span
+                                    class="text-emerald-400 font-bold">12ms</span></div>
+                            <div class="flex items-center gap-1 mt-3">
+                                <span class="text-emerald-500/70">&gt;</span>
+                                <div class="w-2 h-3 bg-emerald-500 animate-pulse"></div>
                             </div>
                         </div>
+                        <!-- Badge -->
                         <div class="absolute bottom-4 left-4">
                             <span
                                 class="px-2 py-1 bg-black/50 border border-white/10 text-xs text-emerald-300 font-mono rounded">ALGORITHMIC
@@ -205,11 +259,12 @@
                         </div>
                     </div>
                     <div class="p-8">
-                        <h3 class="text-xl text-white font-medium mb-2">Neural Ad Engine</h3>
+                        <h3 class="text-xl text-white font-medium mb-2 group-hover:text-emerald-400 transition-colors">
+                            Neural Ad Engine</h3>
                         <p class="text-zinc-400 text-sm leading-relaxed">Real-time bidding system optimized for
-                            sub-100ms latency. (Case Study Locked)</p>
+                            sub-100ms latency. 24/7 autonomous operation.</p>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
     </section>
