@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentient CRM - Predictive Interface | Craden Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 100%);
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        .glassmorphic {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .pulse-bar {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .typing-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00ffff;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-indicator:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+            }
+
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .message-enter {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="antialiased">
+
+    <!-- Exit Button (Triggers prediction) -->
+    <a href="../index.html" id="exit-btn"
+        class="fixed top-6 right-6 z-50 text-xs uppercase tracking-widest text-white/50 hover:text-white transition-colors">
+        ← EXIT
+    </a>
+
+    <!-- Main Container -->
+    <div class="flex items-center justify-center min-h-screen p-6">
+        <div class="w-full max-w-2xl">
+
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-light mb-2">Sentient CRM</h1>
+                <p class="text-sm text-white/50">Predictive AI Interface (R&D)</p>
+            </div>
+
+            <!-- Chat Container -->
+            <div class="glassmorphic rounded-2xl p-6 shadow-2xl">
+
+                <!-- Intent Analysis Bar -->
+                <div
+                    class="mb-6 p-4 rounded-lg bg-gradient-to-r from-cyan-500/10 to-purple-500/10 border border-cyan-500/20">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs uppercase tracking-widest text-cyan-400 pulse-bar"
+                            id="intent-status">ANALYZING INTENT...</span>
+                        <div class="flex gap-1">
+                            <span class="typing-indicator"></span>
+                            <span class="typing-indicator"></span>
+                            <span class="typing-indicator"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Messages Area -->
+                <div id="messages" class="space-y-4 mb-6 h-96 overflow-y-auto pr-2">
+                    <!-- Initial message -->
+                    <div class="flex gap-3 message-enter">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-500 to-purple-500 flex-shrink-0">
+                        </div>
+                        <div class="glassmorphic rounded-2xl rounded-tl-none px-4 py-3 max-w-md">
+                            <p class="text-sm">Hello! I'm Sentient CRM. I can predict what you need before you ask. Try
+                                typing "price" or hovering over the exit button.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input Area -->
+                <div class="relative">
+                    <input type="text" id="user-input" placeholder="Type something..."
+                        class="w-full bg-white/5 border border-white/10 rounded-full px-6 py-4 text-sm focus:outline-none focus:border-cyan-500/50 transition-colors">
+                    <button id="send-btn"
+                        class="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full px-6 py-2 text-xs uppercase tracking-widest hover:opacity-80 transition-opacity">
+                        Send
+                    </button>
+                </div>
+
+                <!-- Prediction Suggestion (Hidden by default) -->
+                <div id="prediction"
+                    class="hidden mt-4 p-4 rounded-lg bg-cyan-500/10 border border-cyan-500/30 animate-pulse">
+                    <p class="text-xs text-cyan-400 mb-2">PREDICTED INTENT</p>
+                    <p class="text-sm" id="prediction-text"></p>
+                    <button id="accept-prediction"
+                        class="mt-3 text-xs uppercase tracking-widest text-cyan-400 hover:text-cyan-300 transition-colors">
+                        Accept Suggestion →
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Footer Note -->
+            <p class="text-center text-xs text-white/30 mt-6">
+                This is a concept demo. No real AI is running—just heuristic prediction logic.
+            </p>
+
+        </div>
+    </div>
+
+    <script src="../assets/js/sentient.js"></script>
+</body>
+
+</html>
