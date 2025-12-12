@@ -158,78 +158,57 @@
     </section>
 
     <!-- Portfolio Grid -->
-    <section id="works" class="border-t border-white/10">
-        <div class="px-6 py-24">
-            <h2 class="text-xs uppercase tracking-widest text-white/50 mb-12">Internal Labs</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/10 border border-white/10">
-                <!-- Project 1: Neural Reactor -->
-                <a href="playground.html">
-                    <div class="bg-[#050505] aspect-square relative group overflow-hidden cursor-pointer">
+    <section id="works" class="py-24 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="mb-16">
+                <h2 class="text-3xl font-light tracking-tighter text-white mb-4">Selected Deployments</h2>
+                <p class="text-zinc-500 font-mono text-sm uppercase tracking-widest">Client Architecture // 2024-2025
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <a href="work/sentient-crm.html"
+                    class="group block relative border border-white/5 bg-zinc-900/50 hover:border-purple-500/50 transition-all duration-500 overflow-hidden">
+                    <div
+                        class="h-64 w-full bg-gradient-to-br from-indigo-900 via-purple-950 to-zinc-950 group-hover:scale-105 transition-transform duration-700 relative">
                         <div
-                            class="absolute inset-0 bg-gradient-to-br from-black to-green-900 border-b border-green-500/20 flex items-center justify-center group-hover:from-green-900 group-hover:to-black transition-all duration-500">
-                            <div
-                                class="text-green-500 font-mono text-xs tracking-[0.2em] border border-green-500/50 px-4 py-2 rounded uppercase">
-                                System: Reactor
-                            </div>
+                            class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPjwvc3ZnPg==')] opacity-30">
                         </div>
-                        <div class="absolute bottom-8 left-8">
-                            <h4
-                                class="text-xl font-medium mb-1 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                                Neural Reactor v1</h4>
-                            <p
-                                class="text-xs text-white/50 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-75">
-                                3D Physics Engine / Lead Capture</p>
+                        <div class="absolute bottom-4 left-4">
+                            <span
+                                class="px-2 py-1 bg-black/50 border border-white/10 text-xs text-purple-300 font-mono rounded">AI
+                                PREDICTION MODEL</span>
                         </div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-xl text-white font-medium mb-2 group-hover:text-purple-400 transition-colors">
+                            Sentient CRM</h3>
+                        <p class="text-zinc-400 text-sm leading-relaxed">Predictive customer behavior modeling using
+                            autonomous agents. Reduced churn by 42%.</p>
                     </div>
                 </a>
 
-                <!-- Project 2: Agency_OS -->
-                <a href="https://cradenstudio.notion.site/AGENCY_OS-INTELLIGENCE-DATABASE-c0c0aab18def4b6ab166f6c8043ecfc2?source=copy_link"
-                    target="_blank" rel="noopener noreferrer">
-                    <div class="bg-[#050505] aspect-square relative group overflow-hidden cursor-pointer">
-                        <div
-                            class="absolute inset-0 bg-gradient-to-br from-gray-900 to-gray-800 border-b border-white/10 flex items-center justify-center group-hover:from-gray-800 group-hover:to-gray-900 transition-all duration-500">
-                            <div
-                                class="flex items-center gap-2 text-white/70 font-mono text-xs tracking-[0.2em] border border-white/20 px-4 py-2 rounded uppercase">
-                                <span>◆</span> Intelligence DB
-                            </div>
-                        </div>
-                        <div class="absolute bottom-8 left-8">
-                            <h4
-                                class="text-xl font-medium mb-1 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                                Agency_OS Architecture</h4>
-                            <p
-                                class="text-xs text-white/50 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-75">
-                                Operational Intelligence System</p>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Project 3: Sentient CRM -->
-                <a href="work/sentient-crm.html">
-                    <div class="bg-[#050505] aspect-square relative group overflow-hidden cursor-pointer">
-                        <div
-                            class="absolute inset-0 bg-gradient-to-br from-black to-blue-900 border-b border-cyan-500/20 flex items-center justify-center group-hover:from-blue-900 group-hover:to-black transition-all duration-500">
-                            <div
-                                class="text-cyan-400 font-mono text-xs tracking-[0.2em] border border-cyan-500/50 px-4 py-2 rounded uppercase animate-pulse">
-                                ● Sentient Core
-                            </div>
-                        </div>
-                        <div class="absolute bottom-8 left-8">
-                            <h4
-                                class="text-xl font-medium mb-1 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                                Sentient CRM</h4>
-                            <p
-                                class="text-xs text-white/50 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-75">
-                                Predictive AI Interface (R&D)</p>
-                        </div>
-                    </div>
-                </a>
-
-                <!-- Project 4: Coming Soon -->
                 <div
-                    class="bg-[#050505] aspect-square relative group overflow-hidden flex items-center justify-center border border-white/5">
-                    <span class="text-white/20 text-xs tracking-widest uppercase">Coming Soon</span>
+                    class="group block relative border border-white/5 bg-zinc-900/50 hover:border-emerald-500/50 transition-all duration-500 overflow-hidden cursor-not-allowed opacity-75">
+                    <div
+                        class="h-64 w-full bg-gradient-to-bl from-emerald-900 via-teal-950 to-zinc-950 group-hover:scale-105 transition-transform duration-700 relative">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div
+                                class="w-32 h-32 border border-emerald-500/20 rounded-full flex items-center justify-center">
+                                <div class="w-24 h-24 border border-emerald-500/40 rounded-full"></div>
+                            </div>
+                        </div>
+                        <div class="absolute bottom-4 left-4">
+                            <span
+                                class="px-2 py-1 bg-black/50 border border-white/10 text-xs text-emerald-300 font-mono rounded">ALGORITHMIC
+                                TRADING</span>
+                        </div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-xl text-white font-medium mb-2">Neural Ad Engine</h3>
+                        <p class="text-zinc-400 text-sm leading-relaxed">Real-time bidding system optimized for
+                            sub-100ms latency. (Case Study Locked)</p>
+                    </div>
                 </div>
             </div>
         </div>
