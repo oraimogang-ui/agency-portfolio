@@ -160,6 +160,16 @@ function init() {
 
     // Start Animation Loop
     animate();
+
+    // Hide Preloader with Cinematic Fade
+    setTimeout(() => {
+        const preloader = document.getElementById('reactor-preloader');
+        if (preloader) {
+            preloader.style.opacity = '0';
+            preloader.style.transition = 'opacity 0.8s ease-out';
+            setTimeout(() => preloader.remove(), 800);
+        }
+    }, 1500); // 1.5s minimum "boot" time
 }
 
 // Create Particle System
